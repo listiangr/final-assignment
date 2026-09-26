@@ -1,0 +1,665 @@
+{
+  "info": {
+    "_postman_id": "44304a5d-1b79-4ba0-8272-e9af13cf99f3",
+    "name": "Final Assignment - Script Labs API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "42962221"
+  },
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Login - Success",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const response = pm.response.json();\r\n\r\npm.environment.set(\"token\", response.data.token);\r\n\r\npm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"Response time is below 2000 ms\", function () {\r\n    pm.expect(pm.response.responseTime).to.be.below(2000);\r\n});\r\n\r\npm.test(\"Response Content-Type is JSON\", function () {\r\n    pm.expect(pm.response.headers.get(\"Content-Type\"))\r\n        .to.include(\"application/json\");\r\n});\r\n\r\npm.test(\"Response body is an object\", function () {\r\n    pm.expect(response).to.be.an(\"object\");\r\n});\r\n\r\npm.test(\"Login success is true\", function () {\r\n    pm.expect(response.success).to.eql(true);\r\n});\r\n\r\npm.test(\"Token is returned\", function () {\r\n    pm.expect(response.data).to.have.property(\"token\");\r\n    pm.expect(response.data.token).to.not.be.empty;\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"{{email}}\",\r\n  \"password\": \"{{password}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login - Failed",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const response = pm.response.json();\r\n\r\npm.test(\"Status code is 401\", function () {\r\n    pm.response.to.have.status(401);\r\n});\r\n\r\npm.test(\"Response time is below 2000 ms\", function () {\r\n    pm.expect(pm.response.responseTime).to.be.below(2000);\r\n});\r\n\r\npm.test(\"Response Content-Type is JSON\", function () {\r\n    pm.expect(pm.response.headers.get(\"Content-Type\"))\r\n        .to.include(\"application/json\");\r\n});\r\n\r\npm.test(\"Login success is false\", function () {\r\n    pm.expect(response.success).to.eql(false);\r\n});\r\n\r\npm.test(\"Error code is AUTH_FAILED\", function () {\r\n    pm.expect(response.error.code).to.eql(\"AUTH_FAILED\");\r\n});\r\n\r\npm.test(\"Error message is correct\", function () {\r\n    pm.expect(response.error.message).to.eql(\r\n        \"Invalid email or password\"\r\n    );\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"{{email}}\",\r\n  \"password\": \"salah123\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Script Labs",
+      "item": [
+        {
+          "name": "Create Lab - Success",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const response = pm.response.json();\r\n\r\npm.environment.set(\"lab_id\", response.data.id);\r\npm.environment.set(\"lab_title\", response.data.title);\r\npm.environment.set(\"lab_description\", response.data.description);\r\n\r\npm.test(\"Status code is 201\", function () {\r\n    pm.response.to.have.status(201);\r\n});\r\n\r\npm.test(\"Response time is below 2000 ms\", function () {\r\n    pm.expect(pm.response.responseTime).to.be.below(2000);\r\n});\r\n\r\npm.test(\"Response Content-Type is JSON\", function () {\r\n    pm.expect(pm.response.headers.get(\"Content-Type\"))\r\n        .to.include(\"application/json\");\r\n});\r\n\r\npm.test(\"Create lab success is true\", function () {\r\n    pm.expect(response.success).to.eql(true);\r\n});\r\n\r\npm.test(\"Created lab has a valid ID\", function () {\r\n    pm.expect(response.data).to.have.property(\"id\");\r\n    pm.expect(response.data.id).to.be.a(\"number\");\r\n    pm.expect(response.data.id).to.be.above(0);\r\n});\r\n\r\npm.test(\"Created lab has title and description\", function () {\r\n    pm.expect(response.data).to.have.property(\"title\");\r\n    pm.expect(response.data).to.have.property(\"description\");\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"title\": \"[LNi] Script Labs API Test {{$timestamp}}\",\r\n  \"description\": \"[LNi] Create lab test executed through Postman automation\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/labs",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "labs"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Lab - Duplicate",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const response = pm.response.json();\r\n\r\npm.test(\"Status code is 409\", function () {\r\n    pm.response.to.have.status(409);\r\n});\r\n\r\npm.test(\"Response time is below 2000 ms\", function () {\r\n    pm.expect(pm.response.responseTime).to.be.below(2000);\r\n});\r\n\r\npm.test(\"Response Content-Type is JSON\", function () {\r\n    pm.expect(pm.response.headers.get(\"Content-Type\"))\r\n        .to.include(\"application/json\");\r\n});\r\n\r\npm.test(\"Response body is an object\", function () {\r\n    pm.expect(response).to.be.an(\"object\");\r\n});\r\n\r\npm.test(\"Response contains duplicate error\", function () {\r\n    const message = response.error?.message || response.message;\r\n    pm.expect(message).to.be.a(\"string\");\r\n});\r\n\r\npm.test(\"Error message indicates duplicate lab\", function () {\r\n    const message = response.error?.message || response.message || \"\";\r\n    pm.expect(message.toLowerCase()).to.include(\"already exists\");\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"title\": \"{{lab_title}}\",\r\n  \"description\": \"{{lab_description}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/labs",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "labs"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "All Labs - Success",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const response = pm.response.json();\r\n\r\npm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"Response time is below 2000 ms\", function () {\r\n    pm.expect(pm.response.responseTime).to.be.below(2000);\r\n});\r\n\r\npm.test(\"Response Content-Type is JSON\", function () {\r\n    pm.expect(pm.response.headers.get(\"Content-Type\"))\r\n        .to.include(\"application/json\");\r\n});\r\n\r\npm.test(\"Get labs success is true\", function () {\r\n    pm.expect(response.success).to.eql(true);\r\n});\r\n\r\npm.test(\"Labs data is an array\", function () {\r\n    pm.expect(response.data).to.be.an(\"array\");\r\n});\r\n\r\npm.test(\"Pagination information is available\", function () {\r\n    pm.expect(response).to.have.property(\"pagination\");\r\n    pm.expect(response.pagination).to.have.property(\"page\");\r\n    pm.expect(response.pagination).to.have.property(\"limit\");\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/labs?page=1&limit=10",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "labs"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "All Labs - Unauthorized",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const response = pm.response.json();\r\n\r\npm.test(\"Status code is 401\", function () {\r\n    pm.response.to.have.status(401);\r\n});\r\n\r\npm.test(\"Response time is below 2000 ms\", function () {\r\n    pm.expect(pm.response.responseTime).to.be.below(2000);\r\n});\r\n\r\npm.test(\"Response Content-Type is JSON\", function () {\r\n    pm.expect(pm.response.headers.get(\"Content-Type\"))\r\n        .to.include(\"application/json\");\r\n});\r\n\r\npm.test(\"Response body is an object\", function () {\r\n    pm.expect(response).to.be.an(\"object\");\r\n});\r\n\r\npm.test(\"Response contains message\", function () {\r\n    pm.expect(response).to.have.property(\"message\");\r\n});\r\n\r\npm.test(\"Error message is No token provided\", function () {\r\n    pm.expect(response.message).to.eql(\"No token provided\");\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/labs?page=1&limit=5",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "labs"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "5"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Lab Detail - Success",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const response = pm.response.json();\r\n\r\npm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"Response time is below 2000 ms\", function () {\r\n    pm.expect(pm.response.responseTime).to.be.below(2000);\r\n});\r\n\r\npm.test(\"Response Content-Type is JSON\", function () {\r\n    pm.expect(pm.response.headers.get(\"Content-Type\"))\r\n        .to.include(\"application/json\");\r\n});\r\n\r\npm.test(\"Get lab detail success is true\", function () {\r\n    pm.expect(response.success).to.eql(true);\r\n});\r\n\r\npm.test(\"Lab ID matches environment lab_id\", function () {\r\n    pm.expect(response.data.id).to.eql(\r\n        Number(pm.environment.get(\"lab_id\"))\r\n    );\r\n});\r\n\r\npm.test(\"Lab detail has required fields\", function () {\r\n    pm.expect(response.data).to.have.property(\"id\");\r\n    pm.expect(response.data).to.have.property(\"title\");\r\n    pm.expect(response.data).to.have.property(\"description\");\r\n    pm.expect(response.data).to.have.property(\"created_at\");\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/labs/{{lab_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "labs",
+                "{{lab_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Lab Detail - Not Found",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const response = pm.response.json();\r\n\r\npm.test(\"Status code is 404\", function () {\r\n    pm.response.to.have.status(404);\r\n});\r\n\r\npm.test(\"Response time is below 2000 ms\", function () {\r\n    pm.expect(pm.response.responseTime).to.be.below(2000);\r\n});\r\n\r\npm.test(\"Response Content-Type is JSON\", function () {\r\n    pm.expect(pm.response.headers.get(\"Content-Type\"))\r\n        .to.include(\"application/json\");\r\n});\r\n\r\npm.test(\"Response body is an object\", function () {\r\n    pm.expect(response).to.be.an(\"object\");\r\n});\r\n\r\npm.test(\"Response contains error message\", function () {\r\n    const message = response.error?.message || response.message;\r\n    pm.expect(message).to.be.a(\"string\");\r\n});\r\n\r\npm.test(\"Error message indicates lab not found\", function () {\r\n    const message = response.error?.message || response.message || \"\";\r\n    pm.expect(message.toLowerCase()).to.include(\"lab not found\");\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/labs/99999999",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "labs",
+                "99999999"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Search Lab - Success",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const response = pm.response.json();\r\n\r\nconst expectedPage = 1;\r\nconst expectedLimit = 5;\r\nconst keyword = \"script labs api\";\r\n\r\npm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"Response time is below 2000 ms\", function () {\r\n    pm.expect(pm.response.responseTime).to.be.below(2000);\r\n});\r\n\r\npm.test(\"Search labs success is true\", function () {\r\n    pm.expect(response.success).to.eql(true);\r\n});\r\n\r\npm.test(\"Search result data is an array\", function () {\r\n    pm.expect(response.data).to.be.an(\"array\");\r\n});\r\n\r\npm.test(\"Search results match keyword\", function () {\r\n    const hasMatch = response.data.some(function (lab) {\r\n        const title = (lab.title || \"\").toLowerCase();\r\n        const description = (lab.description || \"\").toLowerCase();\r\n\r\n        return (\r\n            title.includes(keyword) ||\r\n            description.includes(keyword)\r\n        );\r\n    });\r\n\r\n    pm.expect(hasMatch).to.eql(true);\r\n});\r\n\r\npm.test(\"Pagination matches request\", function () {\r\n    pm.expect(response.pagination.page).to.eql(expectedPage);\r\n    pm.expect(response.pagination.limit).to.eql(expectedLimit);\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/labs/search?q=Script LabS API&page=1&limit=5",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "labs",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "Script LabS API"
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "5"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Lab - Success",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const suffix = Date.now();\r\n\r\npm.environment.set(\r\n    \"updated_title\",\r\n    `[LNi] Script Labs API Test Updated ${suffix}`\r\n);\r\n\r\npm.environment.set(\r\n    \"updated_description\",\r\n    \"[LNi] Updated lab data through Postman API automation\"\r\n);"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\nconst contentType = pm.response.headers.get(\"Content-Type\") || \"\";\r\n\r\nif (pm.response.code === 200 && contentType.includes(\"application/json\")) {\r\n    const response = pm.response.json();\r\n\r\n    pm.test(\"Update lab success is true\", function () {\r\n        pm.expect(response.success).to.eql(true);\r\n    });\r\n\r\n    pm.test(\"Updated lab ID matches environment lab_id\", function () {\r\n        pm.expect(response.data.id).to.eql(\r\n            Number(pm.environment.get(\"lab_id\"))\r\n        );\r\n    });\r\n\r\n    pm.test(\"Lab data is updated correctly\", function () {\r\n        pm.expect(response.data.title).to.eql(\r\n            pm.environment.get(\"updated_title\")\r\n        );\r\n\r\n        pm.expect(response.data.description).to.eql(\r\n            pm.environment.get(\"updated_description\")\r\n        );\r\n    });\r\n\r\n    pm.test(\"Updated lab contains updated_at\", function () {\r\n        pm.expect(response.data).to.have.property(\"updated_at\");\r\n    });\r\n}\r\n\r\npm.test(\"Response time is below 2000 ms\", function () {\r\n    pm.expect(pm.response.responseTime).to.be.below(2000);\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"title\": \"{{updated_title}}\",\r\n  \"description\": \"{{updated_description}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/labs/{{lab_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "labs",
+                "{{lab_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Lab - Invalid Payload",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const response = pm.response.json();\r\n\r\npm.test(\"Status code is 400\", function () {\r\n    pm.response.to.have.status(400);\r\n});\r\n\r\npm.test(\"Response time is below 2000 ms\", function () {\r\n    pm.expect(pm.response.responseTime).to.be.below(2000);\r\n});\r\n\r\npm.test(\"Response Content-Type is JSON\", function () {\r\n    pm.expect(pm.response.headers.get(\"Content-Type\"))\r\n        .to.include(\"application/json\");\r\n});\r\n\r\npm.test(\"Response body is an object\", function () {\r\n    pm.expect(response).to.be.an(\"object\");\r\n});\r\n\r\npm.test(\"Response contains validation error\", function () {\r\n    const message = response.error?.message || response.message;\r\n    pm.expect(message).to.be.a(\"string\");\r\n});\r\n\r\npm.test(\"Validation error indicates title is required\", function () {\r\n    const message = response.error?.message || response.message || \"\";\r\n    pm.expect(message.toLowerCase()).to.include(\"not allowed to be empty\");\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"title\": \"\",\r\n    \"description\": \"Negative API test with missing required title\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/labs/{{lab_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "labs",
+                "{{lab_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Lab - Success",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\nconst contentType = pm.response.headers.get(\"Content-Type\") || \"\";\r\n\r\nif (pm.response.code === 200 && contentType.includes(\"application/json\")) {\r\n    const response = pm.response.json();\r\n\r\n    pm.test(\"Delete lab success is true\", function () {\r\n        pm.expect(response.success).to.eql(true);\r\n    });\r\n\r\n    pm.test(\"Deleted lab ID matches environment lab_id\", function () {\r\n        pm.expect(String(response.data.id)).to.eql(\r\n            String(pm.environment.get(\"lab_id\"))\r\n        );\r\n    });\r\n\r\n    pm.test(\"Delete success message is correct\", function () {\r\n        pm.expect(response.message.toLowerCase()).to.eql(\"lab deleted successfully\");\r\n    });\r\n\r\n    pm.test(\"Delete response contains timestamp\", function () {\r\n        pm.expect(response).to.have.property(\"timestamp\");\r\n    });\r\n}\r\n\r\npm.test(\"Response time is below 2000 ms\", function () {\r\n    pm.expect(pm.response.responseTime).to.be.below(2000);\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/labs/{{lab_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "labs",
+                "{{lab_id}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Data Driven",
+      "item": [
+        {
+          "name": "Login - Success",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const response = pm.response.json();\r\n\r\npm.environment.set(\"token\", response.data.token);\r\n\r\npm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"Response time is below 2000 ms\", function () {\r\n    pm.expect(pm.response.responseTime).to.be.below(2000);\r\n});\r\n\r\npm.test(\"Response Content-Type is JSON\", function () {\r\n    pm.expect(pm.response.headers.get(\"Content-Type\"))\r\n        .to.include(\"application/json\");\r\n});\r\n\r\npm.test(\"Response body is an object\", function () {\r\n    pm.expect(response).to.be.an(\"object\");\r\n});\r\n\r\npm.test(\"Login success is true\", function () {\r\n    pm.expect(response.success).to.eql(true);\r\n});\r\n\r\npm.test(\"Token is returned\", function () {\r\n    pm.expect(response.data).to.have.property(\"token\");\r\n    pm.expect(response.data.token).to.not.be.empty;\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"{{email}}\",\r\n  \"password\": \"{{password}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Lab - CSV",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const expectedStatus = parseInt(\r\n    pm.iterationData.get(\"expected_status\")\r\n);\r\n\r\nconst csvTitle = pm.iterationData.get(\"csv_title\");\r\nconst csvDescription = pm.iterationData.get(\"csv_description\");\r\n\r\nlet json;\r\n\r\ntry {\r\n    json = pm.response.json();\r\n} catch (e) {\r\n    json = null;\r\n}\r\n\r\npm.test(\"Status code sesuai CSV\", function () {\r\n    pm.response.to.have.status(expectedStatus);\r\n});\r\n\r\npm.test(\"Response time < 2000ms\", function () {\r\n    pm.expect(pm.response.responseTime).to.be.below(2000);\r\n});\r\n\r\npm.test(\"Response Content-Type adalah JSON\", function () {\r\n    pm.expect(pm.response.headers.get(\"Content-Type\"))\r\n        .to.include(\"application/json\");\r\n});\r\n\r\npm.test(\"Response body adalah JSON valid\", function () {\r\n    pm.expect(json).to.not.be.null;\r\n});\r\n\r\npm.test(\"Response sesuai tipe skenario\", function () {\r\n    if (expectedStatus === 201) {\r\n        pm.expect(json.success).to.eql(true);\r\n        pm.expect(json.data).to.have.property(\"id\");\r\n        pm.expect(json.data.id).to.be.a(\"number\");\r\n    } else {\r\n        pm.expect(json).to.be.an(\"object\");\r\n    }\r\n});\r\n\r\npm.test(\"Response sesuai data input\", function () {\r\n    if (expectedStatus === 201) {\r\n        pm.expect(json.data.title).to.include(csvTitle);\r\n        pm.expect(json.data.description).to.eql(csvDescription);\r\n    } else {\r\n        pm.expect(json).to.exist;\r\n    }\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"title\": \"{{csv_title}}\",\r\n  \"description\": \"{{csv_description}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/labs",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "labs"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
