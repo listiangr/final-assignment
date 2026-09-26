@@ -1,0 +1,45 @@
+name: API Test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  api-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install Newman
+        run: npm install -g newman
+
+      - name: Run main API tests
+        run: |
+          newman run ./postman/final-assignment.postman_collection.json \
+            -e ./postman/final-assignment.postman_environment.json \
+            --folder "Authentication" \
+            --folder "Script Labs" \
+            --env-var "base_url=https://api-script-labs.hendri.me" \
+            --env-var "email=${{ secrets.API_EMAIL }}" \
+            --env-var "password=${{ secrets.API_PASSWORD }}"
+
+      - name: Run data-driven API tests
+        run: |
+          newman run ./postman/final-assignment.postman_collection.json \
+            -e ./postman/final-assignment.postman_environment.json \
+            -d ./data/final-assignment.csv \
+            --folder "Data Driven" \
+            --env-var "base_url=https://api-script-labs.hendri.me" \
+            --env-var "email=${{ secrets.API_EMAIL }}" \
+            --env-var "password=${{ secrets.API_PASSWORD }}"
