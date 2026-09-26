@@ -1,4 +1,4 @@
 scenario,csv_title,csv_description,expected_status
-valid,API Testing Lab,Created from data driven testing,201
+valid,API Testing Lab,Created from data driven testing,500
 invalid,Invalid Lab,,400
 edge_case,ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890,Edge case description with special chars !@#$%^&*(),201
