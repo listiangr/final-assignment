@@ -323,3 +323,13 @@ Pipeline berhasil menjalankan:
 - Newman execution
 - GitHub Actions CI
 - Gatekeeper scenario
+
+## Evidence
+
+### Pipeline Failed - Gatekeeper Test
+
+![Pipeline Failed](./evidence/pipeline-failed.png)
+
+### Pipeline Success
+
+![Pipeline Success](./evidence/pipeline-success.png)
